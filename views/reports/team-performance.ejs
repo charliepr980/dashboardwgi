@@ -1,0 +1,252 @@
+<%- contentFor('body') %>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0">Team Performance Report</h5>
+      <a href="/reports/team-performance/export?startDate=<%= startDate %>&endDate=<%= endDate %>" class="btn btn-success btn-sm">
+        <i class="bi bi-file-excel"></i> Export to Excel
+      </a>
+    </div>
+  </div>
+  <div class="card-body">
+    <form action="/reports/team-performance" method="GET" class="row g-3 mb-4">
+      <div class="col-md-5">
+        <label for="startDate" class="form-label">Start Date</label>
+        <input type="date" class="form-control" id="startDate" name="startDate" value="<%= startDate %>">
+      </div>
+      <div class="col-md-5">
+        <label for="endDate" class="form-label">End Date</label>
+        <input type="date" class="form-control" id="endDate" name="endDate" value="<%= endDate %>">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Apply</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Team Comparison</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info">
+          Team comparison data is available in the tables below.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Team Distribution</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info">
+          Team distribution data is available in the tables below.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Team Duracell Performance</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Total Joined Employees:</span>
+            <strong><%= teamStats.duracell.total %></strong>
+          </div>
+          <div class="progress mb-3">
+            <div class="progress-bar bg-success" role="progressbar" style="width: <%= performanceMetrics.duracell.percentOfTotal %>%" 
+              aria-valuenow="<%= performanceMetrics.duracell.percentOfTotal %>" aria-valuemin="0" aria-valuemax="100">
+              <%= performanceMetrics.duracell.percentOfTotal %>% of total
+            </div>
+          </div>
+        </div>
+
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Type</th>
+              <th>Count</th>
+              <th>Percentage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Light Industrial</td>
+              <td><%= teamStats.duracell.lightIndustrial %></td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="progress flex-grow-1 me-2" style="height: 5px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: <%= performanceMetrics.duracell.lightIndustrialPercent %>%"></div>
+                  </div>
+                  <span><%= performanceMetrics.duracell.lightIndustrialPercent %>%</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Professional</td>
+              <td><%= teamStats.duracell.professional %></td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="progress flex-grow-1 me-2" style="height: 5px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: <%= performanceMetrics.duracell.professionalPercent %>%"></div>
+                  </div>
+                  <span><%= performanceMetrics.duracell.professionalPercent %>%</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot class="table-light">
+            <tr>
+              <th>Total</th>
+              <th><%= teamStats.duracell.total %></th>
+              <th>100%</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Team Braves Performance</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Total Joined Employees:</span>
+            <strong><%= teamStats.braves.total %></strong>
+          </div>
+          <div class="progress mb-3">
+            <div class="progress-bar bg-success" role="progressbar" style="width: <%= performanceMetrics.braves.percentOfTotal %>%" 
+              aria-valuenow="<%= performanceMetrics.braves.percentOfTotal %>" aria-valuemin="0" aria-valuemax="100">
+              <%= performanceMetrics.braves.percentOfTotal %>% of total
+            </div>
+          </div>
+        </div>
+
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Type</th>
+              <th>Count</th>
+              <th>Percentage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Light Industrial</td>
+              <td><%= teamStats.braves.lightIndustrial %></td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="progress flex-grow-1 me-2" style="height: 5px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: <%= performanceMetrics.braves.lightIndustrialPercent %>%"></div>
+                  </div>
+                  <span><%= performanceMetrics.braves.lightIndustrialPercent %>%</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Professional</td>
+              <td><%= teamStats.braves.professional %></td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="progress flex-grow-1 me-2" style="height: 5px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: <%= performanceMetrics.braves.professionalPercent %>%"></div>
+                  </div>
+                  <span><%= performanceMetrics.braves.professionalPercent %>%</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot class="table-light">
+            <tr>
+              <th>Total</th>
+              <th><%= teamStats.braves.total %></th>
+              <th>100%</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Overall Performance Summary</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card mb-3">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Total Joined Employees</h6>
+                <h3 class="card-title mb-0"><%= teamStats.overall.total %></h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card mb-3">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Date Range</h6>
+                <h5 class="card-title mb-0"><%= new Date(startDate).toLocaleDateString() %> to <%= new Date(endDate).toLocaleDateString() %></h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <table class="table table-bordered mt-3">
+          <thead class="table-light">
+            <tr>
+              <th>Team</th>
+              <th>Light Industrial</th>
+              <th>Professional</th>
+              <th>Total</th>
+              <th>% of Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Team Duracell</td>
+              <td><%= teamStats.duracell.lightIndustrial %></td>
+              <td><%= teamStats.duracell.professional %></td>
+              <td><%= teamStats.duracell.total %></td>
+              <td><%= performanceMetrics.duracell.percentOfTotal %>%</td>
+            </tr>
+            <tr>
+              <td>Team Braves</td>
+              <td><%= teamStats.braves.lightIndustrial %></td>
+              <td><%= teamStats.braves.professional %></td>
+              <td><%= teamStats.braves.total %></td>
+              <td><%= performanceMetrics.braves.percentOfTotal %>%</td>
+            </tr>
+          </tbody>
+          <tfoot class="table-light">
+            <tr>
+              <th>Overall</th>
+              <th><%= teamStats.overall.lightIndustrial %></th>
+              <th><%= teamStats.overall.professional %></th>
+              <th><%= teamStats.overall.total %></th>
+              <th>100%</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

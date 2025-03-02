@@ -1,0 +1,115 @@
+<%- contentFor('body') %>
+
+<div class="row">
+  <div class="col-md-10 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Add New Interview</h5>
+      </div>
+      <div class="card-body">
+        <form action="/interviews/add" method="POST">
+          <div class="row g-3">
+            <!-- Candidate Information -->
+            <div class="col-md-6">
+              <label for="candidate" class="form-label">Candidate Name *</label>
+              <input type="text" class="form-control" id="candidate" name="candidate" required>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="recruiter" class="form-label">Recruiter</label>
+              <input type="text" class="form-control" id="recruiter" name="recruiter">
+            </div>
+            
+            <!-- Company/Position Information -->
+            <div class="col-md-4">
+              <label for="company" class="form-label">Company *</label>
+              <input type="text" class="form-control" id="company" name="company" required>
+            </div>
+            
+            <div class="col-md-4">
+              <label for="position" class="form-label">Position *</label>
+              <input type="text" class="form-control" id="position" name="position" required>
+            </div>
+            
+            <div class="col-md-4">
+              <label for="type" class="form-label">Type *</label>
+              <select class="form-select" id="type" name="type" required>
+                <option value="">Select Type</option>
+                <option value="Light Industrial">Light Industrial</option>
+                <option value="Professional">Professional</option>
+              </select>
+            </div>
+            
+            <!-- Date/Time Information -->
+            <div class="col-md-4">
+              <label for="startTime" class="form-label">Start Time *</label>
+              <input type="datetime-local" class="form-control" id="startTime" name="startTime" required>
+            </div>
+            
+            <div class="col-md-4">
+              <label for="endTime" class="form-label">End Time *</label>
+              <input type="datetime-local" class="form-control" id="endTime" name="endTime" required>
+            </div>
+            
+            <div class="col-md-4">
+              <label for="status" class="form-label">Status *</label>
+              <select class="form-select" id="status" name="status" required>
+                <option value="Scheduled" selected>Scheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="No Show">No Show</option>
+                <option value="Rescheduled">Rescheduled</option>
+              </select>
+            </div>
+            
+            <!-- Additional Details -->
+            <div class="col-md-12">
+              <label for="location" class="form-label">Location</label>
+              <input type="text" class="form-control" id="location" name="location" placeholder="Virtual" value="Virtual">
+              <small class="text-muted">If virtual, enter meeting link/details in notes</small>
+            </div>
+            
+            <div class="col-md-12">
+              <label for="notes" class="form-label">Notes</label>
+              <textarea class="form-control" id="notes" name="notes" rows="4"></textarea>
+            </div>
+            
+            <div class="col-12 mt-4">
+              <div class="d-flex justify-content-between">
+                <a href="/interviews" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Interview</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Set default times for the interview (today 9 AM - 10 AM)
+  document.addEventListener('DOMContentLoaded', function() {
+    const now = new Date();
+    const startTime = new Date(now);
+    startTime.setHours(9, 0, 0, 0); // 9:00 AM
+    
+    const endTime = new Date(now);
+    endTime.setHours(10, 0, 0, 0); // 10:00 AM
+    
+    // Format for datetime-local input: YYYY-MM-DDThh:mm
+    document.getElementById('startTime').value = startTime.toISOString().slice(0, 16);
+    document.getElementById('endTime').value = endTime.toISOString().slice(0, 16);
+    
+    // Validate end time is after start time
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const start = new Date(document.getElementById('startTime').value);
+      const end = new Date(document.getElementById('endTime').value);
+      
+      if (end <= start) {
+        e.preventDefault();
+        alert('End time must be after start time.');
+      }
+    });
+  });
+</script>

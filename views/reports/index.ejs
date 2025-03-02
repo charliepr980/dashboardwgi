@@ -1,0 +1,40 @@
+<%- contentFor('body') %>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5>Welcome to the Reports Dashboard</h5>
+        <p>
+          Here you can access various management reports to help with decision making and performance tracking.
+          Each report contains visualizations and can be exported to Excel for further analysis.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <% reports.forEach(report => { %>
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="bi <%= report.icon %>"></i> <%= report.title %>
+          </h5>
+        </div>
+        <div class="card-body">
+          <p class="card-text"><%= report.description %></p>
+        </div>
+        <div class="card-footer bg-white">
+          <a href="/reports/<%= report.id %>" class="btn btn-primary">
+            <i class="bi bi-bar-chart"></i> View Report
+          </a>
+          <a href="/reports/<%= report.id %>/export" class="btn btn-success">
+            <i class="bi bi-file-excel"></i> Export to Excel
+          </a>
+        </div>
+      </div>
+    </div>
+  <% }); %>
+</div>

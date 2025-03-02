@@ -1,0 +1,42 @@
+<%- include('../partials/messages') %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4><i class="fas fa-file-upload"></i> Import Relocations</h4>
+        </div>
+        <div class="card-body">
+          <p>
+            Import relocations from an Excel file. The file should have the following columns:
+            <code>Resource Name</code>, <code>Last Known Information</code>, <code>Relocate?</code>, <code>Job Title</code>,
+            <code>Estimated End Date</code>, <code>Client</code>, <code>Status</code>
+          </p>
+          
+          <div class="alert alert-info">
+            <strong>Tips:</strong>
+            <ul>
+              <li>Resource Name is the only required field</li>
+              <li>Relocate? should be 'Yes' or 'No'</li>
+              <li>Status should be one of: 'Active Worker', 'Finished', 'Found a Job', 'Relocated Successfully'</li>
+              <li>Estimated End Date should be in YYYY-MM-DD format</li>
+            </ul>
+          </div>
+          
+          <form action="/relocations/import" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="relocationFile" class="form-label">Excel File</label>
+              <input class="form-control" type="file" id="relocationFile" name="relocationFile" required accept=".xlsx,.xls">
+              <div class="form-text">Only .xlsx and .xls files are supported.</div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-upload"></i> Upload and Import
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

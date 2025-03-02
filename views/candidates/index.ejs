@@ -1,0 +1,416 @@
+<%- contentFor('body') %>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Candidate Tracking</h5>
+        <div>
+          <a href="/candidates/export" class="btn btn-success btn-sm me-2">
+            <i class="bi bi-file-excel"></i> Export to Excel
+          </a>
+          <a href="/candidates/import" class="btn btn-primary btn-sm me-2">
+            <i class="bi bi-upload"></i> Import Candidates
+          </a>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- Status Summary -->
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <div class="bg-light p-3 rounded">
+              <div class="row">
+                <div class="col text-center">
+                  <h6 class="text-muted">Total</h6>
+                  <h4 class="text-primary"><%= statusCounts.total %></h4>
+                </div>
+                <div class="col text-center">
+                  <h6 class="text-muted">Selected</h6>
+                  <h4 class="text-success"><%= statusCounts.selected %></h4>
+                </div>
+                <div class="col text-center">
+                  <h6 class="text-muted">Shortlisted</h6>
+                  <h4 class="text-info"><%= statusCounts.shortlisted %></h4>
+                </div>
+                <div class="col text-center">
+                  <h6 class="text-muted">Interview</h6>
+                  <h4 class="text-warning"><%= statusCounts.interview %></h4>
+                </div>
+                <div class="col text-center">
+                  <h6 class="text-muted">Neutral</h6>
+                  <h4 class="text-secondary"><%= statusCounts.neutral %></h4>
+                </div>
+                <div class="col text-center">
+                  <h6 class="text-muted">Rejected</h6>
+                  <h4 class="text-danger"><%= statusCounts.rejected %></h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Form -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Search Candidates</h5>
+          </div>
+          <div class="card-body">
+            <form action="/candidates" method="GET">
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label for="candidateName" class="form-label">Candidate Name</label>
+                  <input type="text" class="form-control" id="candidateName" name="candidateName" 
+                         value="<%= searchQuery.candidateName || '' %>">
+                </div>
+                <div class="col-md-3">
+                  <label for="company" class="form-label">Company</label>
+                  <select class="form-select" id="company" name="company">
+                    <option value="">All Companies</option>
+                    <% uniqueCompanies.forEach(function(company) { %>
+                      <option value="<%= company %>" 
+                        <%= searchQuery.company === company ? 'selected' : '' %>>
+                        <%= company %>
+                      </option>
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="jobTitle" class="form-label">Job Title</label>
+                  <select class="form-select" id="jobTitle" name="jobTitle">
+                    <option value="">All Positions</option>
+                    <% uniqueJobTitles.forEach(function(title) { %>
+                      <option value="<%= title %>" 
+                        <%= searchQuery.jobTitle === title ? 'selected' : '' %>>
+                        <%= title %>
+                      </option>
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="status" class="form-label">Status Category</label>
+                  <select class="form-select" id="status" name="status">
+                    <option value="">All Statuses</option>
+                    <option value="Selected" <%= searchQuery.status === 'Selected' ? 'selected' : '' %>>Selected</option>
+                    <option value="Shortlisted" <%= searchQuery.status === 'Shortlisted' ? 'selected' : '' %>>Shortlisted</option>
+                    <option value="Interview" <%= searchQuery.status === 'Interview' ? 'selected' : '' %>>Interview</option>
+                    <option value="Neutral" <%= searchQuery.status === 'Neutral' ? 'selected' : '' %>>Neutral</option>
+                    <option value="Rejected" <%= searchQuery.status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+                    <option value="Other" <%= searchQuery.status === 'Other' ? 'selected' : '' %>>Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-3">
+                  <label for="submittedBy" class="form-label">Submitted By</label>
+                  <select class="form-select" id="submittedBy" name="submittedBy">
+                    <option value="">All Recruiters</option>
+                    <% uniqueSubmitters.forEach(function(submitter) { %>
+                      <option value="<%= submitter %>" 
+                        <%= searchQuery.submittedBy === submitter ? 'selected' : '' %>>
+                        <%= submitter %>
+                      </option>
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="startDate" class="form-label">Start Date</label>
+                  <input type="date" class="form-control" id="startDate" name="startDate" 
+                         value="<%= searchQuery.startDate || '' %>">
+                </div>
+                <div class="col-md-3">
+                  <label for="endDate" class="form-label">End Date</label>
+                  <input type="date" class="form-control" id="endDate" name="endDate" 
+                         value="<%= searchQuery.endDate || '' %>">
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                  <div class="d-flex w-100">
+                    <button type="submit" class="btn btn-primary me-2 flex-grow-1">Search</button>
+                    <a href="/candidates" class="btn btn-secondary flex-grow-1">Reset</a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Mass Edit Form -->
+        <form id="massEditForm" action="/candidates/mass-update?_method=PUT" method="POST">
+          <input type="hidden" name="_method" value="PUT">
+          
+          <!-- Mass Edit Controls -->
+          <div class="mb-3 d-flex justify-content-between align-items-center">
+            <div>
+              <button type="button" id="selectAllBtn" class="btn btn-outline-secondary btn-sm me-2">Select All</button>
+              <button type="button" id="deselectAllBtn" class="btn btn-outline-secondary btn-sm">Deselect All</button>
+            </div>
+            <div class="d-flex align-items-center" id="massEditControls" style="display: none;">
+              <span class="me-2"><span id="selectedCount">0</span> candidates selected</span>
+       <!-- Update this part in candidates/index.ejs -->
+<select class="form-select form-select-sm me-2" id="massStatusUpdate" name="status" style="width: 200px;">
+  <option value="">Change Status To...</option>
+  <optgroup label="Selected">
+    <option value="Work Order Confirmed">Work Order Confirmed</option>
+    <option value="Work Order Accepted">Work Order Accepted</option>
+    <option value="Offer Pending">Offer Pending</option>
+    <option value="Pending Onboarding">Pending Onboarding</option>
+    <option value="Onboarded">Onboarded</option>
+  </optgroup>
+  <optgroup label="Interview">
+    <option value="Interview Scheduled">Interview Scheduled</option>
+    <option value="Interview Confirmed">Interview Confirmed</option>
+    <option value="Interview Completed">Interview Completed</option>
+    <option value="Interview Rejected">Interview Rejected</option>
+  </optgroup>
+  <optgroup label="Shortlisted">
+    <option value="Qualified">Qualified</option>
+    <option value="Shortlisted">Shortlisted</option>
+  </optgroup>
+  <optgroup label="Rejected/Neutral">
+    <option value="Rejected">Rejected</option>
+    <option value="Disqualified">Disqualified</option>
+<option value="Rejected (Neutral)">Rejected (Neutral)</option>
+    <option value="Neutral - Candidate Declined">Neutral - Candidate Declined</option>
+    <option value="Neutral - Other Offer">Neutral - Other Offer</option>
+    <option value="Neutral - Withdrawn">Neutral - Withdrawn</option>
+    <option value="Neutral - Relocation">Neutral - Relocation</option>
+    <option value="Neutral - Personal Reasons">Neutral - Personal Reasons</option>
+  </optgroup>
+</select>
+              <button type="submit" class="btn btn-primary btn-sm" id="massUpdateBtn">Update Selected</button>
+            </div>
+          </div>
+
+          <!-- Candidates Table -->
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox" id="masterCheckbox" class="form-check-input"></th>
+                  <th>Candidate Name</th>
+                  <th>Company</th>
+                  <th>Job Title</th>
+                  <th>Submitted By</th>
+                  <th>Submit Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (candidates.length > 0) { %>
+                  <% candidates.forEach(function(candidate) { %>
+                    <tr class="candidate-row">
+                      <td>
+                        <input type="checkbox" name="selectedCandidates[]" value="<%= candidate.id %>" class="form-check-input candidate-checkbox">
+                      </td>
+                      <td><%= candidate.candidateName %></td>
+                      <td><%= candidate.company %></td>
+                      <td><%= candidate.jobTitle %></td>
+                      <td><%= candidate.submittedBy %></td>
+                      <td><%= new Date(candidate.submitDate).toLocaleDateString() %></td>
+                      <td>
+                        <span class="badge 
+                          <%= 
+                            candidate.getStatusCategory() === 'Selected' ? 'bg-success' :
+                            candidate.getStatusCategory() === 'Shortlisted' ? 'bg-info' :
+                            candidate.getStatusCategory() === 'Interview' ? 'bg-warning' :
+                            candidate.getStatusCategory() === 'Rejected' ? 'bg-danger' :
+                            candidate.getStatusCategory() === 'Neutral' ? 'bg-secondary' :
+                            'bg-light text-dark'
+                          %>">
+                          <%= candidate.status %> 
+                          (<%= candidate.getStatusCategory() %>)
+                        </span>
+                      </td>
+                      <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                          <a href="/candidates/edit/<%= candidate.id %>" class="btn btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }); %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="8" class="text-center">No candidates found</td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </form>
+
+        <!-- Pagination -->
+        <% if (totalPages > 1) { %>
+          <nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    <% if (currentPage > 1) { %>
+      <li class="page-item">
+        <a class="page-link" href="/candidates?<%= new URLSearchParams(
+          Object.fromEntries(
+            Object.entries(searchQuery).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+          )
+        ).toString() %>&page=<%= currentPage - 1 %>" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    <% } %>
+    
+    <% for(let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+      <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+        <a class="page-link" href="/candidates?<%= new URLSearchParams(
+          Object.fromEntries(
+            Object.entries(searchQuery).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+          )
+        ).toString() %>&page=<%= i %>"><%= i %></a>
+      </li>
+    <% } %>
+    
+    <% if (currentPage < totalPages) { %>
+      <li class="page-item">
+        <a class="page-link" href="/candidates?<%= new URLSearchParams(
+          Object.fromEntries(
+            Object.entries(searchQuery).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+          )
+        ).toString() %>&page=<%= currentPage + 1 %>" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    <% } %>
+  </ul>
+</nav>
+       <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const masterCheckbox = document.getElementById('masterCheckbox');
+    const candidateCheckboxes = document.querySelectorAll('.candidate-checkbox');
+    const massEditControls = document.getElementById('massEditControls');
+    const selectedCountElement = document.getElementById('selectedCount');
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const deselectAllBtn = document.getElementById('deselectAllBtn');
+    const massStatusUpdate = document.getElementById('massStatusUpdate');
+    const massRejectionReasonUpdate = document.getElementById('massRejectionReasonUpdate');
+    const massUpdateBtn = document.getElementById('massUpdateBtn');
+    
+    // Update the selected count and show/hide mass edit controls
+    function updateSelectedCount() {
+      const selectedCount = document.querySelectorAll('.candidate-checkbox:checked').length;
+      selectedCountElement.textContent = selectedCount;
+      
+      if (selectedCount > 0) {
+        massEditControls.style.display = 'flex';
+      } else {
+        massEditControls.style.display = 'none';
+      }
+    }
+    
+    // Show/hide rejection reason based on status selection
+    massStatusUpdate.addEventListener('change', function() {
+      const selectedStatus = this.value.toLowerCase();
+      
+      // Show rejection reason dropdown only for Rejected or Disqualified statuses
+      // Neutral options will already contain the rejection reason
+      if (selectedStatus === 'rejected' || selectedStatus === 'disqualified') {
+        massRejectionReasonUpdate.style.display = 'block';
+      } else {
+        massRejectionReasonUpdate.style.display = 'none';
+        
+        // If a Neutral status is selected, set the rejection reason to match the status
+        if (selectedStatus.includes('neutral')) {
+          // Create a hidden input for rejection reason if it doesn't exist
+          let hiddenRejectionReason = document.getElementById('hiddenRejectionReason');
+          if (!hiddenRejectionReason) {
+            hiddenRejectionReason = document.createElement('input');
+            hiddenRejectionReason.type = 'hidden';
+            hiddenRejectionReason.id = 'hiddenRejectionReason';
+            hiddenRejectionReason.name = 'rejectionReason';
+            massRejectionReasonUpdate.parentNode.appendChild(hiddenRejectionReason);
+          }
+          
+          // Set the rejection reason to match the selected status
+          hiddenRejectionReason.value = this.value;
+        }
+      }
+    });
+    
+    // Master checkbox toggle
+    masterCheckbox.addEventListener('change', function() {
+      candidateCheckboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+      });
+      updateSelectedCount();
+    });
+    
+    // Individual checkbox toggles
+    candidateCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        // If any checkbox is unchecked, uncheck the master checkbox
+        if (!this.checked) {
+          masterCheckbox.checked = false;
+        }
+        
+        // If all checkboxes are checked, check the master checkbox
+        if (document.querySelectorAll('.candidate-checkbox:checked').length === candidateCheckboxes.length) {
+          masterCheckbox.checked = true;
+        }
+        
+        updateSelectedCount();
+      });
+    });
+    
+    // Select All button
+    selectAllBtn.addEventListener('click', function() {
+      masterCheckbox.checked = true;
+      candidateCheckboxes.forEach(checkbox => {
+        checkbox.checked = true;
+      });
+      updateSelectedCount();
+    });
+    
+    // Deselect All button
+    deselectAllBtn.addEventListener('click', function() {
+      masterCheckbox.checked = false;
+      candidateCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+      });
+      updateSelectedCount();
+    });
+    
+    // Form submission validation
+    document.getElementById('massEditForm').addEventListener('submit', function(e) {
+      const selectedCandidates = document.querySelectorAll('.candidate-checkbox:checked').length;
+      const selectedStatus = massStatusUpdate.value;
+      
+      if (selectedCandidates === 0) {
+        e.preventDefault();
+        alert('Please select at least one candidate to update.');
+        return false;
+      }
+      
+      if (!selectedStatus) {
+        e.preventDefault();
+        alert('Please select a status to apply to the selected candidates.');
+        return false;
+      }
+      
+      // If status is Rejected/Disqualified (but not Neutral), require a rejection reason
+      if ((selectedStatus.toLowerCase() === 'rejected' || selectedStatus.toLowerCase() === 'disqualified') 
+          && !massRejectionReasonUpdate.value && !selectedStatus.toLowerCase().includes('neutral')) {
+        e.preventDefault();
+        alert('Please select a rejection reason for the rejected/disqualified candidates.');
+        return false;
+      }
+      
+      return true;
+    });
+    
+    // Initialize UI
+    updateSelectedCount();
+  });
+</script>

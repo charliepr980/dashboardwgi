@@ -1,0 +1,76 @@
+<%- contentFor('body') %>
+
+<div class="container">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0">
+        <div class="card-body p-5">
+          <div class="text-center mb-4">
+            <img src="/img/logo.png" alt="Company Logo" class="img-fluid mb-4" style="max-width: 200px;">
+            <h2 class="text-primary">Recruitment Dashboard</h2>
+            <p class="text-muted">Enter your credentials to access the dashboard</p>
+          </div>
+          
+          <%- include('../partials/messages') %>
+          
+          <form action="/login" method="POST">
+            <div class="mb-4">
+              <label for="email" class="form-label">Email</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-envelope"></i>
+                </span>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" value="<%= typeof email != 'undefined' ? email : '' %>" required>
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-lock"></i>
+                </span>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2 mb-4">
+              <button type="submit" class="btn btn-primary btn-lg">Login</button>
+            </div>
+            
+            <div class="text-center">
+              <p class="text-muted">Don't have an account? Contact your administrator.</p>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4 text-muted">
+        <small>&copy; <%= new Date().getFullYear() %> Recruitment Dashboard. All rights reserved.</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+  
+  .card {
+    border-radius: 10px;
+  }
+  
+  .input-group-text {
+    border-right: none;
+  }
+  
+  .form-control {
+    border-left: none;
+  }
+  
+  .btn-primary {
+    background-color: #0062cc;
+    padding: 10px 20px;
+  }
+</style>

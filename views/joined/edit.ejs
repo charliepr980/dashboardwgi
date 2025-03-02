@@ -1,0 +1,104 @@
+<%- contentFor('body') %>
+
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Edit Joined Employee</h5>
+      </div>
+      <div class="card-body">
+        <form action="/joined/edit/<%= joinedEmployee.id %>?_method=PUT" method="POST">
+          <div class="mb-3">
+            <label for="historicalId" class="form-label">Position (Optional)</label>
+            <select name="historicalId" id="historicalId" class="form-select">
+              <option value="">Select Position</option>
+              <% positions.forEach(position => { %>
+                <option value="<%= position.id %>" 
+                        data-type="<%= position.type %>"
+                        data-title="<%= position.title %>"
+                        data-company="<%= position.company %>"
+                        <%= joinedEmployee.historicalId && joinedEmployee.historicalId.id === position.id ? 'selected' : '' %>>
+                  <%= position.company %> - <%= position.title %> (<%= position.jobId %>)
+                </option>
+              <% }); %>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="jobTitle" class="form-label">Job Title</label>
+            <input type="text" class="form-control" id="jobTitle" name="jobTitle" value="<%= joinedEmployee.jobTitle %>" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="company" class="form-label">Company</label>
+            <input type="text" class="form-control" id="company" name="company" value="<%= joinedEmployee.company %>" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="employeeName" class="form-label">Employee Name</label>
+            <input type="text" class="form-control" id="employeeName" name="employeeName" value="<%= joinedEmployee.employeeName %>" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="type" class="form-label">Employee Type</label>
+            <select name="type" id="type" class="form-select" required>
+              <option value="">Select Type</option>
+              <option value="Light Industrial" <%= joinedEmployee.type === 'Light Industrial' ? 'selected' : '' %>>Light Industrial</option>
+              <option value="Professional" <%= joinedEmployee.type === 'Professional' ? 'selected' : '' %>>Professional</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="recruiterTeam" class="form-label">Recruiter Team</label>
+            <select name="recruiterTeam" id="recruiterTeam" class="form-select" required>
+              <option value="">Select Team</option>
+              <option value="Team Braves" <%= joinedEmployee.recruiterTeam === 'Team Braves' ? 'selected' : '' %>>Team Braves</option>
+              <option value="Team Duracell" <%= joinedEmployee.recruiterTeam === 'Team Duracell' ? 'selected' : '' %>>Team Duracell</option>
+            </select>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="startDate" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="startDate" name="startDate" 
+                  value="<%= new Date(joinedEmployee.startDate).toISOString().split('T')[0] %>" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="joinedDate" class="form-label">Joined Date</label>
+                <input type="date" class="form-control" id="joinedDate" name="joinedDate" 
+                  value="<%= new Date(joinedEmployee.joinedDate).toISOString().split('T')[0] %>" required>
+              </div>
+            </div>
+          </div>
+          
+          <div class="d-flex justify-content-between">
+            <a href="/joined" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Update Joined Employee</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Script to update the fields based on selected position
+  document.addEventListener('DOMContentLoaded', function() {
+    const positionSelect = document.getElementById('historicalId');
+    const jobTitleInput = document.getElementById('jobTitle');
+    const companyInput = document.getElementById('company');
+    
+    if (positionSelect && jobTitleInput && companyInput) {
+      positionSelect.addEventListener('change', function() {
+        const selectedOption = positionSelect.options[positionSelect.selectedIndex];
+        if (selectedOption && selectedOption.value) {
+          jobTitleInput.value = selectedOption.getAttribute('data-title') || '';
+          companyInput.value = selectedOption.getAttribute('data-company') || '';
+        }
+      });
+    }
+  });
+</script>

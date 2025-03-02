@@ -1,0 +1,126 @@
+/* public/css/main.css */
+body {
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+.content {
+  margin-left: 250px;
+  padding: 20px;
+  transition: margin-left 0.3s;
+}
+
+.page-title {
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.form-control:focus, .btn:focus {
+  box-shadow: none;
+}
+
+.table th {
+  font-weight: 600;
+  background-color: #f8f9fa;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.action-buttons .btn {
+  margin-right: 5px;
+}
+
+.action-buttons .btn:last-child {
+  margin-right: 0;
+}
+
+.required-field::after {
+  content: "*";
+  color: red;
+  margin-left: 3px;
+}
+
+.filter-section {
+  background-color: #f8f9fa;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.metric-card {
+  text-align: center;
+  padding: 20px;
+}
+
+.metric-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.metric-label {
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+.metric-breakdown {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+  margin-top: 10px;
+}
+
+.breakdown-item {
+  text-align: center;
+}
+
+.breakdown-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.breakdown-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    padding: 15px;
+  }
+  
+  .content.active {
+    margin-left: 250px;
+  }
+  
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .metric-value {
+    font-size: 2rem;
+  }
+  
+  .metric-label {
+    font-size: 1rem;
+  }
+  
+  .breakdown-value {
+    font-size: 1.2rem;
+  }
+  
+  .breakdown-label {
+    font-size: 0.8rem;
+  }
+}

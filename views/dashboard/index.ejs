@@ -1,0 +1,310 @@
+<%- contentFor('body') %>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h5>Date Range Options</h5>
+  </div>
+  <div class="card-body">
+    <form action="/dashboard" method="GET" id="dateRangeForm" class="row g-3">
+      <div class="col-md-4">
+        <select class="form-select" id="dateRangePreset" name="preset" onchange="toggleCustomDateRange()">
+          <option value="fy2025" <%= dateRange.preset === 'fy2025' || dateRange.preset === 'all' ? 'selected' : '' %>>Fiscal Year 2025</option>
+          <option value="custom" <%= dateRange.preset === 'custom' ? 'selected' : '' %>>Custom Range</option>
+        </select>
+      </div>
+      
+      <div class="col-md-3 custom-date-range <%= dateRange.preset !== 'custom' ? 'd-none' : '' %>">
+        <input type="date" class="form-control" id="startDate" name="startDate" value="<%= dateRange.startDate ? new Date(dateRange.startDate).toISOString().split('T')[0] : '' %>">
+        <label for="startDate" class="form-label">Start Date</label>
+      </div>
+      
+      <div class="col-md-3 custom-date-range <%= dateRange.preset !== 'custom' ? 'd-none' : '' %>">
+        <input type="date" class="form-control" id="endDate" name="endDate" value="<%= dateRange.endDate ? new Date(dateRange.endDate).toISOString().split('T')[0] : '' %>">
+        <label for="endDate" class="form-label">End Date</label>
+      </div>
+      
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Apply</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <strong>Showing data for:</strong> <%= dateRangeText %>
+</div>
+
+<!-- Performance Metrics Section -->
+<div class="row mt-4">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Submission Performance Metrics</h5>
+      </div>
+      <div class="card-body">
+  <% 
+    // Calculate performance metrics correctly based on openings
+    const lightIndustrialSubmissions = data.lightIndustrialSubmissionsCount || 0;
+    const professionalSubmissions = data.professionalSubmissionsCount || 0;
+    const lightIndustrialOpenings = data.lightIndustrialOpenings || 0;
+    const professionalOpenings = data.professionalOpenings || 0;
+    
+    // Calculate percentages based on submissions vs openings
+    const lightIndustrialPerformance = lightIndustrialOpenings > 0 ? 
+      Math.min(100, (lightIndustrialSubmissions / lightIndustrialOpenings * 100).toFixed(2)) : 0;
+    const professionalPerformance = professionalOpenings > 0 ? 
+      Math.min(100, (professionalSubmissions / professionalOpenings * 100).toFixed(2)) : 0;
+    
+    // Calculate total performance as a weighted average
+    const totalOpenings = lightIndustrialOpenings + professionalOpenings;
+    const totalSubmissions = lightIndustrialSubmissions + professionalSubmissions;
+    const totalPerformance = totalOpenings > 0 ? 
+      Math.min(100, (totalSubmissions / totalOpenings * 100).toFixed(2)) : 0;
+    
+    // Performance goal
+    const performanceGoal = 90;
+    const isPerformanceGoalMet = totalPerformance >= performanceGoal;
+  %>
+  
+  <div class="row mb-3">
+    <div class="col-8">
+      <h6>Light Industrial Performance:</h6>
+      <small class="text-muted">
+        <%= lightIndustrialSubmissions %> submissions / <%= lightIndustrialOpenings %> openings
+      </small>
+    </div>
+    <div class="col-4 text-end">
+      <span class="fw-bold"><%= lightIndustrialPerformance %>%</span>
+    </div>
+    <div class="col-12">
+      <div class="progress">
+        <div class="progress-bar bg-info" role="progressbar" style="width: <%= lightIndustrialPerformance %>%"
+          aria-valuenow="<%= lightIndustrialPerformance %>" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mb-3">
+    <div class="col-8">
+      <h6>Professional Performance:</h6>
+      <small class="text-muted">
+        <%= professionalSubmissions %> submissions / <%= professionalOpenings %> openings
+      </small>
+    </div>
+    <div class="col-4 text-end">
+      <span class="fw-bold"><%= professionalPerformance %>%</span>
+    </div>
+    <div class="col-12">
+      <div class="progress">
+        <div class="progress-bar bg-primary" role="progressbar" style="width: <%= professionalPerformance %>%"
+          aria-valuenow="<%= professionalPerformance %>" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mb-3">
+    <div class="col-8">
+      <h6>Total Performance (Goal: <%= performanceGoal %>%):</h6>
+      <small class="text-muted">
+        <%= totalSubmissions %> submissions / <%= totalOpenings %> openings
+      </small>
+    </div>
+    <div class="col-4 text-end">
+      <span class="fw-bold <%= isPerformanceGoalMet ? 'text-success' : 'text-danger' %>"><%= totalPerformance %>%</span>
+    </div>
+    <div class="col-12">
+      <div class="progress">
+        <div class="progress-bar <%= isPerformanceGoalMet ? 'bg-success' : 'bg-danger' %>" role="progressbar" 
+            style="width: <%= totalPerformance %>%"
+            aria-valuenow="<%= totalPerformance %>" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </div>
+  </div>
+  
+  <% if (isPerformanceGoalMet) { %>
+    <div class="alert alert-success mb-0">
+      <i class="bi bi-check-circle-fill me-2"></i>Congratulations! The team has met or exceeded the performance goal.
+    </div>
+  <% } else { %>
+    <div class="alert alert-danger mb-0">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>The team is below the performance goal by <%= (performanceGoal - totalPerformance).toFixed(2) %>%.
+    </div>
+  <% } %>
+</div>
+    </div>
+  </div>
+  
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Joined Performance Metrics</h5>
+      </div>
+      <div class="card-body">
+        <% 
+          // Joined performance calculations
+          const professionalJoined = data.professionalJoinedCount || 0;
+          const lightIndustrialJoined = data.lightIndustrialJoinedCount || 0;
+          
+          // Calculate monthly factors for goals (based on date range)
+let monthFactor = 1; // Default for monthly view
+
+if (typeof dateRange !== 'undefined') {
+  // This is for dashboard with date range
+  const startDate = new Date(dateRange.startDate);
+  const endDate = new Date(dateRange.endDate);
+  
+  // Calculate date difference in days
+  const diffTime = Math.abs(endDate - startDate);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Calculate months more accurately based on actual days
+  // Using 30.44 days as average month length (365.25/12)
+  monthFactor = Math.max(1, Math.round(diffDays / 30.44)); 
+  
+  // Cap at 12 for Fiscal Year
+  if (dateRange.preset === 'fy2025' || dateRange.preset === 'all') {
+    monthFactor = Math.min(12, monthFactor);
+  }
+}
+          
+          // Monthly goals with factor applied
+          const professionalGoal = 6 * monthFactor;
+          const lightIndustrialGoal = 5 * monthFactor;
+          
+          // Check if goals are met
+          const isProfessionalGoalMet = professionalJoined >= professionalGoal;
+          const isLightIndustrialGoalMet = lightIndustrialJoined >= lightIndustrialGoal;
+          
+          // Calculate percentages of goal completion
+          const professionalGoalPercentage = Math.min(100, (professionalJoined / professionalGoal * 100).toFixed(2));
+          const lightIndustrialGoalPercentage = Math.min(100, (lightIndustrialJoined / lightIndustrialGoal * 100).toFixed(2));
+        %>
+        
+        <div class="row mb-3">
+          <div class="col-8">
+            <h6>Professional Joined:</h6>
+            <small class="text-muted">Goal: <%= professionalGoal %> for <%= monthFactor > 1 ? monthFactor + ' months' : '1 month' %></small>
+          </div>
+          <div class="col-4 text-end">
+            <span class="fw-bold <%= isProfessionalGoalMet ? 'text-success' : 'text-danger' %>">
+              <%= professionalJoined %> / <%= professionalGoal %>
+            </span>
+          </div>
+          <div class="col-12">
+            <div class="progress">
+              <div class="progress-bar <%= isProfessionalGoalMet ? 'bg-success' : 'bg-danger' %>" role="progressbar" 
+                style="width: <%= professionalGoalPercentage %>%"
+                aria-valuenow="<%= professionalGoalPercentage %>" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row mb-3">
+          <div class="col-8">
+            <h6>Light Industrial Joined:</h6>
+            <small class="text-muted">Goal: <%= lightIndustrialGoal %> for <%= monthFactor > 1 ? monthFactor + ' months' : '1 month' %></small>
+          </div>
+          <div class="col-4 text-end">
+            <span class="fw-bold <%= isLightIndustrialGoalMet ? 'text-success' : 'text-danger' %>">
+              <%= lightIndustrialJoined %> / <%= lightIndustrialGoal %>
+            </span>
+          </div>
+          <div class="col-12">
+            <div class="progress">
+              <div class="progress-bar <%= isLightIndustrialGoalMet ? 'bg-success' : 'bg-danger' %>" role="progressbar" 
+                style="width: <%= lightIndustrialGoalPercentage %>%"
+                aria-valuenow="<%= lightIndustrialGoalPercentage %>" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row mt-4">
+          <div class="col-12">
+            <% if (isProfessionalGoalMet && isLightIndustrialGoalMet) { %>
+              <div class="alert alert-success mb-0">
+                <i class="bi bi-trophy-fill me-2"></i>All joined employee goals have been met!
+              </div>
+            <% } else if (isProfessionalGoalMet || isLightIndustrialGoalMet) { %>
+              <div class="alert alert-warning mb-0">
+                <i class="bi bi-exclamation-circle-fill me-2"></i>One goal has been met, but we're still working on the other one.
+              </div>
+            <% } else { %>
+              <div class="alert alert-danger mb-0">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>We need to focus on increasing our joined employees in both categories.
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="card metric-card">
+      <div class="metric-value"><%= data.lightIndustrialCount %></div>
+      <div class="metric-label">Light Industrial Positions</div>
+      <div class="metric-detail">
+        <span class="badge bg-info">
+          <i class="bi bi-door-open"></i> <%= data.lightIndustrialOpenings %> Openings
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card metric-card">
+      <div class="metric-value"><%= data.professionalCount %></div>
+      <div class="metric-label">Professional Positions</div>
+      <div class="metric-detail">
+        <span class="badge bg-info">
+          <i class="bi bi-door-open"></i> <%= data.professionalOpenings %> Openings
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card metric-card">
+      <div class="metric-value"><%= data.submissionsCount %></div>
+      <div class="metric-label">Submissions</div>
+      <div class="metric-breakdown">
+        <div class="breakdown-item">
+          <div class="breakdown-value"><%= data.lightIndustrialSubmissionsCount %></div>
+          <div class="breakdown-label">Light Industrial</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-value"><%= data.professionalSubmissionsCount %></div>
+          <div class="breakdown-label">Professional</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card metric-card">
+      <div class="metric-value"><%= data.joinedCount %></div>
+      <div class="metric-label">Joined</div>
+      <div class="metric-breakdown">
+        <!-- First show position type metrics -->
+        <div class="breakdown-item">
+          <div class="breakdown-value"><%= data.lightIndustrialJoinedCount %></div>
+          <div class="breakdown-label">Light Industrial</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-value"><%= data.professionalJoinedCount %></div>
+          <div class="breakdown-label">Professional</div>
+        </div>
+        <!-- Add a slight separation -->
+        <div style="margin-top: 10px;"></div>
+        <!-- Then show team metrics -->
+        <div class="breakdown-item">
+          <div class="breakdown-value"><%= data.teamBravesJoinedCount || 0 %></div>
+          <div class="breakdown-label">Team Braves</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-value"><%= data.teamDuracellJoinedCount || 0 %></div>
+          <div class="breakdown-label">Team Duracell</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

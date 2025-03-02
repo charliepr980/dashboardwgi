@@ -1,0 +1,228 @@
+<%- contentFor('body') %>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0">Candidate Pipeline Report</h5>
+      <a href="/reports/candidate-pipeline/export" class="btn btn-success btn-sm">
+        <i class="bi bi-file-excel"></i> Export to Excel
+      </a>
+    </div>
+  </div>
+  <div class="card-body">
+    <p>
+      This report provides an analysis of the current candidate pipeline, showing the distribution of candidates across different status categories.
+      It also includes a comparison of submitter performance based on their candidate status outcomes.
+    </p>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-5">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Pipeline Overview</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info">
+          Pipeline status distribution data is available in the table on the right.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Pipeline Status Summary</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Status</th>
+              <th>Count</th>
+              <th>Percentage</th>
+              <th>Visualization</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Selected</td>
+              <td><%= statusCounts.selected %></td>
+              <td><%= statusPercentages.selected %>%</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: <%= statusPercentages.selected %>%" 
+                    aria-valuenow="<%= statusPercentages.selected %>" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Shortlisted</td>
+              <td><%= statusCounts.shortlisted %></td>
+              <td><%= statusPercentages.shortlisted %>%</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar bg-info" role="progressbar" style="width: <%= statusPercentages.shortlisted %>%" 
+                    aria-valuenow="<%= statusPercentages.shortlisted %>" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Interview</td>
+              <td><%= statusCounts.interview %></td>
+              <td><%= statusPercentages.interview %>%</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar bg-warning" role="progressbar" style="width: <%= statusPercentages.interview %>%" 
+                    aria-valuenow="<%= statusPercentages.interview %>" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Neutral</td>
+              <td><%= statusCounts.neutral %></td>
+              <td><%= statusPercentages.neutral %>%</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar bg-secondary" role="progressbar" style="width: <%= statusPercentages.neutral %>%" 
+                    aria-valuenow="<%= statusPercentages.neutral %>" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Rejected</td>
+              <td><%= statusCounts.rejected %></td>
+              <td><%= statusPercentages.rejected %>%</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar bg-danger" role="progressbar" style="width: <%= statusPercentages.rejected %>%" 
+                    aria-valuenow="<%= statusPercentages.rejected %>" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Other</td>
+              <td><%= statusCounts.other %></td>
+              <td><%= statusPercentages.other %>%</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar bg-light text-dark" role="progressbar" style="width: <%= statusPercentages.other %>%" 
+                    aria-valuenow="<%= statusPercentages.other %>" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot class="table-light">
+            <tr>
+              <th>Total</th>
+              <th><%= statusCounts.total %></th>
+              <th>100%</th>
+              <th></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Submitter Performance Comparison</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info">
+          Submitter performance data is available in the detailed table below.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Top Submitters Analysis</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Submitter</th>
+                <th>Total</th>
+                <th>Selected</th>
+                <th>Selected %</th>
+                <th>Interview</th>
+                <th>Interview %</th>
+                <th>Shortlisted</th>
+                <th>Shortlisted %</th>
+                <th>Rejected</th>
+                <th>Rejected %</th>
+                <th>Neutral</th>
+                <th>Neutral %</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% submitterStats.forEach(submitter => { %>
+                <tr>
+                  <td><%= submitter.name %></td>
+                  <td><strong><%= submitter.total %></strong></td>
+                  <td><%= submitter.selected %></td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="progress flex-grow-1 me-2" style="height: 5px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: <%= submitter.selectedRate %>%"></div>
+                      </div>
+                      <span><%= submitter.selectedRate %>%</span>
+                    </div>
+                  </td>
+                  <td><%= submitter.interview %></td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="progress flex-grow-1 me-2" style="height: 5px;">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: <%= submitter.interviewRate %>%"></div>
+                      </div>
+                      <span><%= submitter.interviewRate %>%</span>
+                    </div>
+                  </td>
+                  <td><%= submitter.shortlisted %></td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="progress flex-grow-1 me-2" style="height: 5px;">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: <%= submitter.shortlistedRate %>%"></div>
+                      </div>
+                      <span><%= submitter.shortlistedRate %>%</span>
+                    </div>
+                  </td>
+                  <td><%= submitter.rejected %></td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="progress flex-grow-1 me-2" style="height: 5px;">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: <%= submitter.rejectedRate %>%"></div>
+                      </div>
+                      <span><%= submitter.rejectedRate %>%</span>
+                    </div>
+                  </td>
+                  <td><%= submitter.neutral %></td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="progress flex-grow-1 me-2" style="height: 5px;">
+                        <div class="progress-bar bg-secondary" role="progressbar" style="width: <%= submitter.neutralRate %>%"></div>
+                      </div>
+                      <span><%= submitter.neutralRate %>%</span>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

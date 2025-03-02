@@ -1,0 +1,158 @@
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h3>Recruitment Dashboard</h3>
+  </div>
+  
+  <% if (locals.user) { %>
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <i class="bi bi-person-circle"></i>
+      </div>
+      <div class="user-info">
+        <div class="user-name"><%= user.name %></div>
+        <div class="user-role"><%= user.role === 'admin' ? 'Administrator' : 'User' %></div>
+      </div>
+    </div>
+  
+    <ul class="sidebar-menu">
+      <li class="sidebar-item <%= title === 'Dashboard' ? 'active' : '' %>">
+        <a href="/dashboard" class="sidebar-link">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      
+      <li class="sidebar-item <%= title === 'Monthly Statistics' ? 'active' : '' %>">
+        <a href="/monthly" class="sidebar-link">
+          <i class="bi bi-calendar-month"></i>
+          <span>Monthly Statistics</span>
+        </a>
+      </li>
+      
+      <li class="sidebar-item <%= title === 'Historical Data' ? 'active' : '' %>">
+        <a href="/historical" class="sidebar-link">
+          <i class="bi bi-database"></i>
+          <span>Historical Data</span>
+        </a>
+      </li>
+      
+      <li class="sidebar-item <%= title.includes('Joined') ? 'active' : '' %>">
+        <a href="/joined" class="sidebar-link">
+          <i class="bi bi-person-check"></i>
+          <span>Joined Employees</span>
+        </a>
+      </li>
+      
+      <li class="sidebar-item <%= title.includes('Interview') ? 'active' : '' %>">
+        <a href="/interviews" class="sidebar-link">
+          <i class="bi bi-calendar2-week"></i>
+          <span>Interview Management</span>
+        </a>
+      </li>
+      
+      <li class="sidebar-item <%= title === 'Candidate Tracking' ? 'active' : '' %>">
+        <a href="/candidates" class="sidebar-link">
+          <i class="bi bi-people"></i>
+          <span>Candidate Tracking</span>
+        </a>
+      </li>
+      
+      <li class="sidebar-item <%= title === 'Relocation Management' || title.includes('Relocation') && !title.includes('Import') ? 'active' : '' %>">
+        <a href="/relocations" class="sidebar-link">
+          <i class="bi bi-geo-alt"></i>
+          <span>Relocation Management</span>
+        </a>
+      </li>
+
+<li class="sidebar-item <%= title.includes('Report') ? 'active' : '' %>">
+  <a href="/reports" class="sidebar-link">
+    <i class="bi bi-bar-chart-line"></i>
+    <span>Reports</span>
+  </a>
+</li>
+      
+      <% if (user.role === 'admin') { %>
+        <li class="sidebar-item <%= 
+          title === 'Import Joined Employee' || 
+          title === 'Import Interviews' || 
+          title === 'Import Candidates' || 
+          title === 'Upload Management' || 
+          title === 'User Management' ||
+          title === 'Relocation Import' ? 'active' : '' 
+        %>">
+          <a href="#" class="sidebar-link dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#dataManagementCollapse" aria-expanded="false">
+            <i class="bi bi-gear"></i>
+            <span>Data Management</span>
+          </a>
+          <div class="collapse <%= 
+            title === 'Import Joined Employee' || 
+            title === 'Import Interviews' || 
+            title === 'Import Candidates' || 
+            title === 'Upload Management' || 
+            title === 'User Management' ||
+            title === 'Relocation Import' ? 'show' : '' 
+          %>" id="dataManagementCollapse">
+            <ul class="sidebar-submenu">
+              <li class="sidebar-subitem <%= title === 'Import Joined Employee' ? 'active' : '' %>">
+                <a href="/import/joined" class="sidebar-sublink">
+                  <i class="bi bi-file-earmark-arrow-up"></i>
+                  <span>Import Joined Employee</span>
+                </a>
+              </li>
+              
+              <li class="sidebar-subitem <%= title === 'Import Interviews' ? 'active' : '' %>">
+                <a href="/interviews/import" class="sidebar-sublink">
+                  <i class="bi bi-calendar-plus"></i>
+                  <span>Import Interviews</span>
+                </a>
+              </li>
+              
+              <li class="sidebar-subitem <%= title === 'Import Candidates' ? 'active' : '' %>">
+                <a href="/candidates/import" class="sidebar-sublink">
+                  <i class="bi bi-person-plus"></i>
+                  <span>Import Candidates</span>
+                </a>
+              </li>
+              
+              <li class="sidebar-subitem <%= title === 'Relocation Import' ? 'active' : '' %>">
+                <a href="/relocations/import" class="sidebar-sublink">
+                  <i class="bi bi-geo-alt"></i>
+                  <span>Relocation Import</span>
+                </a>
+              </li>
+              
+              <li class="sidebar-subitem <%= title === 'Upload Management' ? 'active' : '' %>">
+                <a href="/upload" class="sidebar-sublink">
+                  <i class="bi bi-upload"></i>
+                  <span>Upload Management</span>
+                </a>
+              </li>
+              
+              <li class="sidebar-subitem <%= title === 'User Management' ? 'active' : '' %>">
+                <a href="/users" class="sidebar-sublink">
+                  <i class="bi bi-people-fill"></i>
+                  <span>User Management</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      <% } %>
+      
+      <li class="sidebar-item">
+        <a href="/logout" class="sidebar-link">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+  
+    <div class="sidebar-footer">
+      &copy; <%= 2025 %> Weil Group, Inc
+    </div>
+  <% } else { %>
+    <div class="sidebar-footer">
+      &copy; <%= new Date().getFullYear() %> Weil Group, Inc
+    </div>
+  <% } %>
+</div>

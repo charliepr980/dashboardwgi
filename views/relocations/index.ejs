@@ -1,0 +1,266 @@
+<%- contentFor('body') %>
+
+<div class="row mb-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5>Relocation Statistics</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3 text-center">
+            <div class="mb-2">
+              <h6 class="text-muted">Total Relocations</h6>
+              <h2 class="text-primary"><%= stats.totalRelocations %></h2>
+            </div>
+          </div>
+          <div class="col-md-3 text-center">
+            <div class="mb-2">
+              <h6 class="text-muted">Successfully Relocated</h6>
+              <h2 class="text-success"><%= stats.successfulRelocations %></h2>
+            </div>
+          </div>
+          <div class="col-md-3 text-center">
+            <div class="mb-2">
+              <h6 class="text-muted">Active Workers</h6>
+              <h2 class="text-info"><%= stats.activeWorkers %></h2>
+            </div>
+          </div>
+          <div class="col-md-3 text-center">
+            <div class="mb-2">
+              <h6 class="text-muted">Finished Workers</h6>
+              <h2 class="text-secondary"><%= stats.finishedWorkers %></h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Upcoming Finishing Workers -->
+<div class="row mb-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Active Workers Finishing Soon (Next 90 Days)</h5>
+      </div>
+      <div class="card-body">
+        <% if (upcomingFinishing && upcomingFinishing.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th>Resource Name</th>
+                  <th>Job Title</th>
+                  <th>Client</th>
+                  <th>Estimated End Date</th>
+                  <th>Days Remaining</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% upcomingFinishing.forEach(function(worker) { %>
+                  <tr>
+                    <td><%= worker.resourceName %></td>
+                    <td><%= worker.jobTitle %></td>
+                    <td><%= worker.client %></td>
+                    <td><%= worker.estimatedEndDate.toLocaleDateString() %></td>
+                    <td>
+                      <span class="badge <%= worker.daysRemaining <= 30 ? 'bg-danger' : (worker.daysRemaining <= 60 ? 'bg-warning' : 'bg-info') %>">
+                        <%= worker.daysRemaining %> days
+                      </span>
+                    </td>
+                    <td>
+                      <div class="btn-group btn-group-sm" role="group">
+                        <a href="/relocations/view/<%= worker.id %>" class="btn btn-outline-primary">
+                          <i class="bi bi-eye"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>No active workers finishing in the next 90 days.
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card-header d-flex justify-content-between align-items-center">
+  <h5 class="card-title mb-0">Relocation Management</h5>
+  <div>
+    <a href="/relocations/create" class="btn btn-primary btn-sm me-2">
+      <i class="bi bi-plus-circle"></i> Create New
+    </a>
+    <a href="/relocations/export" class="btn btn-success btn-sm">
+      <i class="bi bi-file-excel"></i> Export to Excel
+    </a>
+  </div>
+</div>  
+  <div class="card-body">
+    <!-- Search Form -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5>Search Relocations</h5>
+      </div>
+      <div class="card-body">
+        <form action="/relocations" method="GET">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label for="resourceName" class="form-label">Resource Name</label>
+              <input type="text" class="form-control" id="resourceName" name="resourceName" 
+                     value="<%= searchQuery.resourceName || '' %>">
+            </div>
+            <div class="col-md-3">
+              <label for="jobTitle" class="form-label">Job Title</label>
+              <input type="text" class="form-control" id="jobTitle" name="jobTitle" 
+                     value="<%= searchQuery.jobTitle || '' %>">
+            </div>
+            <div class="col-md-3">
+              <label for="client" class="form-label">Client</label>
+              <input type="text" class="form-control" id="client" name="client" 
+                     value="<%= searchQuery.client || '' %>">
+            </div>
+            <div class="col-md-3">
+              <label for="status" class="form-label">Status</label>
+              <select class="form-select" id="status" name="status">
+                <option value="">All Statuses</option>
+                <% statusOptions.forEach(function(status) { %>
+                  <option value="<%= status %>" <%= searchQuery.status === status ? 'selected' : '' %>>
+                    <%= status %>
+                  </option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <label for="relocate" class="form-label">Relocate?</label>
+              <select class="form-select" id="relocate" name="relocate">
+                <option value="">All</option>
+                <option value="Yes" <%= searchQuery.relocate === 'Yes' ? 'selected' : '' %>>Yes</option>
+                <option value="No" <%= searchQuery.relocate === 'No' ? 'selected' : '' %>>No</option>
+              </select>
+            </div>
+            <div class="col-md-9 d-flex align-items-end">
+              <div class="d-flex w-100">
+                <button type="submit" class="btn btn-primary me-2">Search</button>
+                <a href="/relocations" class="btn btn-secondary">Reset</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Relocations Table -->
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Resource Name</th>
+            <th>Last Known Information</th>
+            <th>Relocate?</th>
+            <th>Job Title</th>
+            <th>Estimated End Date</th>
+            <th>Client</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (relocations.length > 0) { %>
+            <% relocations.forEach(function(relocation) { %>
+              <tr>
+                <td><%= relocation.resourceName %></td>
+                <td><%= relocation.lastKnownInformation %></td>
+                <td>
+                  <span class="badge bg-<%= relocation.relocate === 'Yes' ? 'success' : 'secondary' %>">
+                    <%= relocation.relocate %>
+                  </span>
+                </td>
+                <td><%= relocation.jobTitle %></td>
+                <td><%= relocation.estimatedEndDate.toLocaleDateString() %></td>
+                <td><%= relocation.client %></td>
+                <td>
+                  <% 
+                    let statusClass = 'secondary';
+                    switch(relocation.status) {
+                      case 'Active Worker': statusClass = 'primary'; break;
+                      case 'Finished': statusClass = 'info'; break;
+                      case 'Found a Job': statusClass = 'warning'; break;
+                      case 'Relocated Successfully': statusClass = 'success'; break;
+                    }
+                  %>
+                  <span class="badge bg-<%= statusClass %>"><%= relocation.status %></span>
+                </td>
+                <td>
+                  <div class="btn-group btn-group-sm" role="group">
+                    <a href="/relocations/view/<%= relocation.id %>" class="btn btn-outline-primary">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="/relocations/edit/<%= relocation.id %>" class="btn btn-outline-secondary">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="8" class="text-center">No relocation records found</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+    <nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    <% if (currentPage > 1) { %>
+      <li class="page-item">
+        <a class="page-link" href="/relocations?<%= new URLSearchParams(
+          Object.fromEntries(
+            Object.entries(searchQuery).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+          )
+        ).toString() %>&page=<%= currentPage - 1 %>" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    <% } %>
+    
+    <% for(let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+      <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+        <a class="page-link" href="/relocations?<%= new URLSearchParams(
+          Object.fromEntries(
+            Object.entries(searchQuery).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+          )
+        ).toString() %>&page=<%= i %>"><%= i %></a>
+      </li>
+    <% } %>
+    
+    <% if (currentPage < totalPages) { %>
+      <li class="page-item">
+        <a class="page-link" href="/relocations?<%= new URLSearchParams(
+          Object.fromEntries(
+            Object.entries(searchQuery).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+          )
+        ).toString() %>&page=<%= currentPage + 1 %>" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    <% } %>
+  </ul>
+</nav>
+    <% } %>
+  </div>
+</div>

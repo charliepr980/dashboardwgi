@@ -1,0 +1,64 @@
+<div class="d-flex flex-column p-3 text-white">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+    <span class="fs-4">Recruitment Dashboard</span>
+  </a>
+  <hr>
+  <ul class="nav nav-pills flex-column mb-auto">
+    <li class="nav-item">
+      <a href="/dashboard" class="nav-link text-white <%= path === '/dashboard' ? 'active' : '' %>">
+        <i class="fas fa-home me-2"></i>
+        Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="/historical" class="nav-link text-white <%= path === '/historical' ? 'active' : '' %>">
+        <i class="fas fa-history me-2"></i>
+        Historical Data
+      </a>
+    </li>
+    <li>
+      <a href="/joined" class="nav-link text-white <%= path === '/joined' ? 'active' : '' %>">
+        <i class="fas fa-user-plus me-2"></i>
+        Joined Employees
+      </a>
+    </li>
+    <li>
+      <a href="/monthly" class="nav-link text-white <%= path === '/monthly' ? 'active' : '' %>">
+        <i class="fas fa-calendar-alt me-2"></i>
+        Monthly Statistics
+      </a>
+    </li>
+    
+    <!-- Admin Options -->
+    <% if (user && user.role === 'admin') { %>
+      <hr>
+      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span>Admin</span>
+      </h6>
+      <li>
+        <a href="/upload" class="nav-link text-white <%= path === '/upload' ? 'active' : '' %>">
+          <i class="fas fa-upload me-2"></i>
+          Data Upload
+        </a>
+      </li>
+      <li>
+        <a href="/users" class="nav-link text-white <%= path === '/users' ? 'active' : '' %>">
+          <i class="fas fa-users-cog me-2"></i>
+          User Management
+        </a>
+      </li>
+    <% } %>
+  </ul>
+  <hr>
+  <div class="dropdown">
+    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+      <img src="https://ui-avatars.com/api/?name=<%= user.name %>&background=random" alt="<%= user.name %>" width="32" height="32" class="rounded-circle me-2">
+      <strong><%= user.name %></strong>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+      <li><a class="dropdown-item" href="/profile">Profile</a></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+    </ul>
+  </div>
+</div>

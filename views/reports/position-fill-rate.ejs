@@ -1,0 +1,593 @@
+<%- contentFor('body') %>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0">Position Fill Rate Report</h5>
+      <a href="/reports/position-fill-rate/export?startDate=<%= startDate %>&endDate=<%= endDate %>" class="btn btn-success btn-sm">
+        <i class="bi bi-file-excel"></i> Export to Excel
+      </a>
+    </div>
+  </div>
+  <div class="card-body">
+    <form action="/reports/position-fill-rate" method="GET" class="row g-3 mb-4">
+      <div class="col-md-5">
+        <label for="startDate" class="form-label">Start Date</label>
+        <input type="date" class="form-control" id="startDate" name="startDate" value="<%= startDate %>">
+      </div>
+      <div class="col-md-5">
+        <label for="endDate" class="form-label">End Date</label>
+        <input type="date" class="form-control" id="endDate" name="endDate" value="<%= endDate %>">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Apply</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Fill Rate Comparison</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info">
+          Fill rate comparison data is available in the tables below.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Types Comparison</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info">
+          Types comparison data is available in the tables below.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Fill Rate Metrics</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Metric</th>
+              <th>Metric Goals</th>
+              <th>Light Industrial</th>
+              <th>Professional</th>
+              <th>Overall</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Total Openings</td>
+              <td>-</td>
+              <td><%= fillRateMetrics.lightIndustrial.openings %></td>
+              <td><%= fillRateMetrics.professional.openings %></td>
+              <td><%= fillRateMetrics.overall.openings %></td>
+            </tr>
+            <tr>
+              <td>Total Submissions</td>
+              <td>-</td>
+              <td><%= fillRateMetrics.lightIndustrial.submissions %></td>
+              <td><%= fillRateMetrics.professional.submissions %></td>
+              <td><%= fillRateMetrics.overall.submissions %></td>
+            </tr>
+            <tr>
+              <td>Total Joined</td>
+              <td>-</td>
+              <td><%= fillRateMetrics.lightIndustrial.joined %></td>
+              <td><%= fillRateMetrics.professional.joined %></td>
+              <td><%= fillRateMetrics.overall.joined %></td>
+            </tr>
+            <tr>
+              <td>Productivity</td>
+              <td>90%</td>
+              <td><%= fillRateMetrics.lightIndustrial.productivity %>%</td>
+              <td><%= fillRateMetrics.professional.productivity %>%</td>
+              <td>
+                <% 
+                  const productivityGoal = 90;
+                  const productivityValue = parseFloat(fillRateMetrics.overall.productivity);
+                  let productivityColor = 'red';
+                  
+                  if (productivityValue >= productivityGoal) {
+                    productivityColor = 'green';
+                  } else if (productivityValue >= productivityGoal / 2) {
+                    productivityColor = 'gold';
+                  }
+                %>
+                <div class="d-flex align-items-center">
+                  <div class="me-2" style="width: 12px; height: 12px; border-radius: 50%; background-color: <%= productivityColor %>;"></div>
+                  <%= fillRateMetrics.overall.productivity %>%
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Efficiency</td>
+              <td>5%</td>
+              <td><%= fillRateMetrics.lightIndustrial.efficiency %>%</td>
+              <td><%= fillRateMetrics.professional.efficiency %>%</td>
+              <td>
+                <% 
+                  const efficiencyGoal = 5;
+                  const efficiencyValue = parseFloat(fillRateMetrics.overall.efficiency);
+                  let efficiencyColor = 'red';
+                  
+                  if (efficiencyValue >= efficiencyGoal) {
+                    efficiencyColor = 'green';
+                  } else if (efficiencyValue >= efficiencyGoal / 2) {
+                    efficiencyColor = 'gold';
+                  }
+                %>
+                <div class="d-flex align-items-center">
+                  <div class="me-2" style="width: 12px; height: 12px; border-radius: 50%; background-color: <%= efficiencyColor %>;"></div>
+                  <%= fillRateMetrics.overall.efficiency %>%
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Hit Rate</td>
+              <td>6%</td>
+              <td><%= fillRateMetrics.lightIndustrial.hitRate %>%</td>
+              <td><%= fillRateMetrics.professional.hitRate %>%</td>
+              <td>
+                <% 
+                  const hitRateGoal = 6;
+                  const hitRateValue = parseFloat(fillRateMetrics.overall.hitRate);
+                  let hitRateColor = 'red';
+                  
+                  if (hitRateValue >= hitRateGoal) {
+                    hitRateColor = 'green';
+                  } else if (hitRateValue >= hitRateGoal / 2) {
+                    hitRateColor = 'gold';
+                  }
+                %>
+                <div class="d-flex align-items-center">
+                  <div class="me-2" style="width: 12px; height: 12px; border-radius: 50%; background-color: <%= hitRateColor %>;"></div>
+                  <%= fillRateMetrics.overall.hitRate %>%
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Average</td>
+              <td>12%</td>
+              <td><%= fillRateMetrics.lightIndustrial.average %>%</td>
+              <td><%= fillRateMetrics.professional.average %>%</td>
+              <td>
+                <% 
+                  const averageGoal = 12;
+                  const averageValue = parseFloat(fillRateMetrics.overall.average);
+                  let averageColor = 'red';
+                  
+                  if (averageValue >= averageGoal) {
+                    averageColor = 'green';
+                  } else if (averageValue >= averageGoal / 2) {
+                    averageColor = 'gold';
+                  }
+                %>
+                <div class="d-flex align-items-center">
+                  <div class="me-2" style="width: 12px; height: 12px; border-radius: 50%; background-color: <%= averageColor %>;"></div>
+                  <%= fillRateMetrics.overall.average %>%
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Light Industrial Performance</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-4">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Productivity:</span>
+            <strong><%= fillRateMetrics.lightIndustrial.productivity %>%</strong>
+          </div>
+          <div class="progress mb-3">
+            <div class="progress-bar bg-primary" role="progressbar" 
+                 style="width: <%= Math.min(fillRateMetrics.lightIndustrial.productivity, 100) %>%" 
+                 aria-valuenow="<%= fillRateMetrics.lightIndustrial.productivity %>" 
+                 aria-valuemin="0" aria-valuemax="100">
+              <%= fillRateMetrics.lightIndustrial.productivity %>%
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Efficiency:</span>
+            <strong><%= fillRateMetrics.lightIndustrial.efficiency %>%</strong>
+          </div>
+          <div class="progress mb-3">
+            <div class="progress-bar bg-success" role="progressbar" 
+                 style="width: <%= Math.min(fillRateMetrics.lightIndustrial.efficiency, 100) %>%" 
+                 aria-valuenow="<%= fillRateMetrics.lightIndustrial.efficiency %>" 
+                 aria-valuemin="0" aria-valuemax="100">
+              <%= fillRateMetrics.lightIndustrial.efficiency %>%
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Hit Rate:</span>
+            <strong><%= fillRateMetrics.lightIndustrial.hitRate %>%</strong>
+          </div>
+          <div class="progress mb-3">
+            <div class="progress-bar bg-info" role="progressbar" 
+                 style="width: <%= Math.min(fillRateMetrics.lightIndustrial.hitRate, 100) %>%" 
+                 aria-valuenow="<%= fillRateMetrics.lightIndustrial.hitRate %>" 
+                 aria-valuemin="0" aria-valuemax="100">
+              <%= fillRateMetrics.lightIndustrial.hitRate %>%
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Average:</span>
+            <strong><%= fillRateMetrics.lightIndustrial.average %>%</strong>
+          </div>
+          <div class="progress mb-3">
+            <div class="progress-bar bg-warning" role="progressbar" 
+                 style="width: <%= Math.min(fillRateMetrics.lightIndustrial.average, 100) %>%" 
+                 aria-valuenow="<%= fillRateMetrics.lightIndustrial.average %>" 
+                 aria-valuemin="0" aria-valuemax="100">
+              <%= fillRateMetrics.lightIndustrial.average %>%
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Professional Performance</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-4">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Productivity:</span>
+            <strong><%= fillRateMetrics.professional.productivity %>%</strong>
+          </div>
+          <div class="progress mb-3">
+            <div class="progress-bar bg-primary" role="progressbar" 
+                 style="width: <%= Math.min(fillRateMetrics.professional.productivity, 100) %>%" 
+                 aria-valuenow="<%= fillRateMetrics.professional.productivity %>" 
+                 aria-valuemin="0" aria-valuemax="100">
+              <%= fillRateMetrics.professional.productivity %>%
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Efficiency:</span>
+            <strong><%= fillRateMetrics.professional.efficiency %>%</strong>
+          </div>
+          <div class="progress mb-3">
+            <div class="progress-bar bg-success" role="progressbar" 
+                 style="width: <%= Math.min(fillRateMetrics.professional.efficiency, 100) %>%" 
+                 aria-valuenow="<%= fillRateMetrics.professional.efficiency %>" 
+                 aria-valuemin="0" aria-valuemax="100">
+              <%= fillRateMetrics.professional.efficiency %>%
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Hit Rate:</span>
+            <strong><%= fillRateMetrics.professional.hitRate %>%</strong>
+          </div>
+          <div class="progress mb-3">
+            <div class="progress-bar bg-info" role="progressbar" 
+                 style="width: <%= Math.min(fillRateMetrics.professional.hitRate, 100) %>%" 
+                 aria-valuenow="<%= fillRateMetrics.professional.hitRate %>" 
+                 aria-valuemin="0" aria-valuemax="100">
+              <%= fillRateMetrics.professional.hitRate %>%
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Average:</span>
+            <strong><%= fillRateMetrics.professional.average %>%</strong>
+          </div>
+          <div class="progress mb-3">
+            <div class="progress-bar bg-warning" role="progressbar" 
+                 style="width: <%= Math.min(fillRateMetrics.professional.average, 100) %>%" 
+                 aria-valuenow="<%= fillRateMetrics.professional.average %>" 
+                 aria-valuemin="0" aria-valuemax="100">
+              <%= fillRateMetrics.professional.average %>%
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Monthly Performance Trend Charts -->
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Monthly Performance Trends</h5>
+      </div>
+      <div class="card-body">
+        <% if (monthlyMetrics && monthlyMetrics.length > 0) { %>
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <h6 class="text-center">Monthly Performance Rates</h6>
+              <canvas id="monthlyRatesChart" width="400" height="250"></canvas>
+            </div>
+            <div class="col-md-6 mb-4">
+              <h6 class="text-center">Monthly Volumes</h6>
+              <canvas id="monthlyVolumesChart" width="400" height="250"></canvas>
+            </div>
+          </div>
+          
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              // Monthly rates chart
+              const monthlyRatesCtx = document.getElementById('monthlyRatesChart').getContext('2d');
+              new Chart(monthlyRatesCtx, {
+                type: 'line',
+                data: {
+                  labels: <%= JSON.stringify(monthlyMetrics.map(m => m.month)) %>,
+                  datasets: [
+                    {
+                      label: 'Productivity (%)',
+                      data: <%= JSON.stringify(monthlyMetrics.map(m => parseFloat(m.productivity))) %>,
+                      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                      borderColor: 'rgb(54, 162, 235)',
+                      borderWidth: 2,
+                      tension: 0.1
+                    },
+                    {
+                      label: 'Efficiency (%)',
+                      data: <%= JSON.stringify(monthlyMetrics.map(m => parseFloat(m.efficiency))) %>,
+                      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                      borderColor: 'rgb(255, 99, 132)',
+                      borderWidth: 2,
+                      tension: 0.1
+                    },
+                    {
+                      label: 'Hit Rate (%)',
+                      data: <%= JSON.stringify(monthlyMetrics.map(m => parseFloat(m.hitRate))) %>,
+                      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                      borderColor: 'rgb(75, 192, 192)',
+                      borderWidth: 2,
+                      tension: 0.1
+                    },
+                    {
+                      label: 'Average (%)',
+                      data: <%= JSON.stringify(monthlyMetrics.map(m => parseFloat(m.average))) %>,
+                      backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                      borderColor: 'rgb(153, 102, 255)',
+                      borderWidth: 2,
+                      tension: 0.1
+                    }
+                  ]
+                },
+                options: {
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                    },
+                    title: {
+                      display: false
+                    }
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      title: {
+                        display: true,
+                        text: 'Percentage (%)'
+                      }
+                    }
+                  }
+                }
+              });
+              
+              // Monthly volumes chart
+              const monthlyVolumesCtx = document.getElementById('monthlyVolumesChart').getContext('2d');
+              new Chart(monthlyVolumesCtx, {
+                type: 'bar',
+                data: {
+                  labels: <%= JSON.stringify(monthlyMetrics.map(m => m.month)) %>,
+                  datasets: [
+                    {
+                      label: 'Openings',
+                      data: <%= JSON.stringify(monthlyMetrics.map(m => m.openings)) %>,
+                      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                      borderColor: 'rgb(54, 162, 235)',
+                      borderWidth: 1
+                    },
+                    {
+                      label: 'Submissions',
+                      data: <%= JSON.stringify(monthlyMetrics.map(m => m.submissions)) %>,
+                      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                      borderColor: 'rgb(255, 99, 132)',
+                      borderWidth: 1
+                    },
+                    {
+                      label: 'Joined',
+                      data: <%= JSON.stringify(monthlyMetrics.map(m => m.joined)) %>,
+                      backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                      borderColor: 'rgb(75, 192, 192)',
+                      borderWidth: 1
+                    }
+                  ]
+                },
+                options: {
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                    },
+                    title: {
+                      display: false
+                    }
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      title: {
+                        display: true,
+                        text: 'Count'
+                      }
+                    }
+                  }
+                }
+              });
+            });
+          </script>
+        <% } else { %>
+          <div class="alert alert-info">
+            No monthly data available for visualization. Please adjust the date range to include more data.
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Monthly Metrics Breakdown Table -->
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Monthly Metrics Breakdown</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>Month</th>
+                <th>Total Openings</th>
+                <th>Total Submissions</th>
+                <th>Total Joined</th>
+                <th>Productivity</th>
+                <th>Efficiency</th>
+                <th>Hit Rate</th>
+                <th>Average</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (monthlyMetrics && monthlyMetrics.length > 0) { %>
+                <% monthlyMetrics.forEach(function(metric) { %>
+                  <tr>
+                    <td><strong><%= metric.month %></strong></td>
+                    <td><%= metric.openings %></td>
+                    <td><%= metric.submissions %></td>
+                    <td><%= metric.joined %></td>
+                    <td>
+                      <% 
+                        const productivityGoal = 90;
+                        const productivityValue = parseFloat(metric.productivity);
+                        let productivityColor = 'red';
+                        
+                        if (productivityValue >= productivityGoal) {
+                          productivityColor = 'green';
+                        } else if (productivityValue >= productivityGoal / 2) {
+                          productivityColor = 'gold';
+                        }
+                      %>
+                      <div class="d-flex align-items-center">
+                        <div class="me-2" style="width: 12px; height: 12px; border-radius: 50%; background-color: <%= productivityColor %>;"></div>
+                        <%= metric.productivity %>%
+                      </div>
+                    </td>
+                    <td>
+                      <% 
+                        const efficiencyGoal = 5;
+                        const efficiencyValue = parseFloat(metric.efficiency);
+                        let efficiencyColor = 'red';
+                        
+                        if (efficiencyValue >= efficiencyGoal) {
+                          efficiencyColor = 'green';
+                        } else if (efficiencyValue >= efficiencyGoal / 2) {
+                          efficiencyColor = 'gold';
+                        }
+                      %>
+                      <div class="d-flex align-items-center">
+                        <div class="me-2" style="width: 12px; height: 12px; border-radius: 50%; background-color: <%= efficiencyColor %>;"></div>
+                        <%= metric.efficiency %>%
+                      </div>
+                    </td>
+                    <td>
+                      <% 
+                        const hitRateGoal = 6;
+                        const hitRateValue = parseFloat(metric.hitRate);
+                        let hitRateColor = 'red';
+                        
+                        if (hitRateValue >= hitRateGoal) {
+                          hitRateColor = 'green';
+                        } else if (hitRateValue >= hitRateGoal / 2) {
+                          hitRateColor = 'gold';
+                        }
+                      %>
+                      <div class="d-flex align-items-center">
+                        <div class="me-2" style="width: 12px; height: 12px; border-radius: 50%; background-color: <%= hitRateColor %>;"></div>
+                        <%= metric.hitRate %>%
+                      </div>
+                    </td>
+                    <td>
+                      <% 
+                        const averageGoal = 12;
+                        const averageValue = parseFloat(metric.average);
+                        let averageColor = 'red';
+                        
+                        if (averageValue >= averageGoal) {
+                          averageColor = 'green';
+                        } else if (averageValue >= averageGoal / 2) {
+                          averageColor = 'gold';
+                        }
+                      %>
+                      <div class="d-flex align-items-center">
+                        <div class="me-2" style="width: 12px; height: 12px; border-radius: 50%; background-color: <%= averageColor %>;"></div>
+                        <%= metric.average %>%
+                      </div>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="8" class="text-center">No monthly data available for the selected date range.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

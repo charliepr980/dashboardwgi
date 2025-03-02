@@ -1,0 +1,88 @@
+<%- contentFor('body') %>
+
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Import Candidates</h5>
+      </div>
+      <div class="card-body">
+        <p class="alert alert-info">
+          <i class="bi bi-info-circle"></i> 
+          Upload an Excel file with candidate data. The file should have columns for: Company, Job Posting ID, Job Title, Candidate Name, Submitted By, Submit Date, Status, and Rejection Reason.
+        </p>
+        
+        <form action="/candidates/import" method="POST" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="candidatesFile" class="form-label">Select Excel File</label>
+            <input type="file" class="form-control" id="candidatesFile" name="candidatesFile" accept=".xlsx, .xls" required>
+            <div class="form-text">Only Excel files (.xlsx, .xls) are accepted.</div>
+          </div>
+          
+          <div class="d-flex justify-content-between">
+            <a href="/candidates" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Import File</button>
+          </div>
+        </form>
+        
+        <div class="mt-4">
+          <h6>Special Processing Rules</h6>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <strong>Status Categories:</strong>
+              <ul>
+                <li><strong>Selected:</strong> Work Order Confirmed, Work Order Accepted, Offer Pending, Onboarded, Pending Onboarding</li>
+                <li><strong>Rejected:</strong> Rejected, Disqualified</li>
+                <li><strong>Neutral:</strong> Rejected candidates with "Neutral" in the Rejection Reason</li>
+                <li><strong>Interview:</strong> Any status containing "Interview"</li>
+                <li><strong>Shortlisted:</strong> Qualified, Shortlisted</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="mt-4">
+          <h6>Sample File Format</h6>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered">
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Job Posting ID</th>
+                  <th>Job Title</th>
+                  <th>Candidate Name</th>
+                  <th>Submitted By</th>
+                  <th>Submit Date</th>
+                  <th>Status</th>
+                  <th>Rejection Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Acme Corp</td>
+                  <td>J12345</td>
+                  <td>Software Developer</td>
+                  <td>John Smith</td>
+                  <td>Mary Johnson</td>
+                  <td>2025-02-15</td>
+                  <td>Interview Scheduled</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>XYZ Inc</td>
+                  <td>P789</td>
+                  <td>Project Manager</td>
+                  <td>Jane Doe</td>
+                  <td>Tom Wilson</td>
+                  <td>2025-02-10</td>
+                  <td>Rejected</td>
+                  <td>Neutral - Other Offer</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

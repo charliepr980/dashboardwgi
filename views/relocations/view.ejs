@@ -1,0 +1,139 @@
+<%- contentFor('body') %>
+
+<div class="row">
+  <div class="col-md-12 mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <a href="/relocations" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to List
+      </a>
+      <div>
+        <a href="/relocations/edit/<%= relocation.id %>" class="btn btn-primary">
+          <i class="bi bi-pencil"></i> Edit
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Relocation Details -->
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Relocation Details</h5>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Resource Name:</div>
+          <div class="col-md-8"><%= relocation.resourceName %></div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Job Title:</div>
+          <div class="col-md-8"><%= relocation.jobTitle %></div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Client:</div>
+          <div class="col-md-8"><%= relocation.client %></div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Estimated End Date:</div>
+          <div class="col-md-8"><%= relocation.estimatedEndDate.toLocaleDateString() %></div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Last Known Information:</div>
+          <div class="col-md-8"><%= relocation.lastKnownInformation %></div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Relocate?</div>
+          <div class="col-md-8">
+            <span class="badge bg-<%= relocation.relocate === 'Yes' ? 'success' : 'secondary' %>">
+              <%= relocation.relocate %>
+            </span>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Status:</div>
+          <div class="col-md-8">
+            <% 
+              let statusClass = 'secondary';
+              switch(relocation.status) {
+                case 'Active Worker': statusClass = 'primary'; break;
+                case 'Finished': statusClass = 'info'; break;
+                case 'Found a Job': statusClass = 'warning'; break;
+                case 'Relocated Successfully': statusClass = 'success'; break;
+              }
+            %>
+            <span class="badge bg-<%= statusClass %>"><%= relocation.status %></span>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Last Updated:</div>
+          <div class="col-md-8"><%= relocation.updatedAt.toLocaleString() %></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notes Section -->
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Add Note</h5>
+      </div>
+      <div class="card-body">
+        <form action="/relocations/note/<%= relocation.id %>" method="POST">
+  <div class="mb-3">
+    <label for="note" class="form-label">New Note</label>
+    <textarea class="form-control" id="note" name="note" rows="4" required></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Add Note</button>
+</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notes History -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Notes History</h5>
+      </div>
+      <div class="card-body">
+        <% if (notes && notes.length > 0) { %>
+          <div class="timeline">
+            <% notes.forEach(function(note, index) { %>
+              <div class="timeline-item <%= index % 2 === 0 ? 'bg-light' : '' %> p-3 mb-3 rounded">
+                <div class="d-flex justify-content-between mb-2">
+                  <div><strong><%= note.createdByName %></strong></div>
+                  <div class="text-muted"><small><%= note.createdAt.toLocaleString() %></small></div>
+                </div>
+                <p class="mb-0"><%= note.note %></p>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>No notes have been added yet.
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .timeline {
+    position: relative;
+    padding: 0;
+  }
+  
+  .timeline-item {
+    border-left: 3px solid #6c757d;
+  }
+  
+  .timeline-item:nth-child(odd) {
+    border-left-color: #0d6efd;
+  }
+</style>

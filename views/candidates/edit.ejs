@@ -1,0 +1,182 @@
+<%- contentFor('body') %>
+
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Edit Candidate Status</h5>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <label class="col-sm-3 col-form-label">Candidate Name:</label>
+          <div class="col-sm-9">
+            <p class="form-control-plaintext"><strong><%= candidate.candidateName %></strong></p>
+          </div>
+        </div>
+        
+        <div class="row mb-3">
+          <label class="col-sm-3 col-form-label">Company:</label>
+          <div class="col-sm-9">
+            <p class="form-control-plaintext"><%= candidate.company || 'N/A' %></p>
+          </div>
+        </div>
+        
+        <div class="row mb-3">
+          <label class="col-sm-3 col-form-label">Job Title:</label>
+          <div class="col-sm-9">
+            <p class="form-control-plaintext"><%= candidate.jobTitle || 'N/A' %></p>
+          </div>
+        </div>
+        
+        <div class="row mb-3">
+          <label class="col-sm-3 col-form-label">Submitted By:</label>
+          <div class="col-sm-9">
+            <p class="form-control-plaintext"><%= candidate.submittedBy || 'N/A' %></p>
+          </div>
+        </div>
+        
+        <div class="row mb-3">
+          <label class="col-sm-3 col-form-label">Submit Date:</label>
+          <div class="col-sm-9">
+            <p class="form-control-plaintext"><%= new Date(candidate.submitDate).toLocaleDateString() %></p>
+          </div>
+        </div>
+        
+        <form action="/candidates/edit/<%= candidate.id %>" method="POST">
+          <div class="row mb-3">
+            <label for="status" class="col-sm-3 col-form-label">Status: *</label>
+            <div class="col-sm-9">
+              <select class="form-select" id="status" name="status" required>
+                <option value="Submitted" <%= candidate.status === 'Submitted' ? 'selected' : '' %>>Submitted</option>
+                <option value="Qualified" <%= candidate.status === 'Qualified' ? 'selected' : '' %>>Qualified</option>
+                <option value="Shortlisted" <%= candidate.status === 'Shortlisted' ? 'selected' : '' %>>Shortlisted</option>
+                <option value="Interview Scheduled" <%= candidate.status === 'Interview Scheduled' ? 'selected' : '' %>>Interview Scheduled</option>
+                <option value="Interview Completed" <%= candidate.status === 'Interview Completed' ? 'selected' : '' %>>Interview Completed</option>
+                <option value="Second Interview" <%= candidate.status === 'Second Interview' ? 'selected' : '' %>>Second Interview</option>
+                <option value="Offer Pending" <%= candidate.status === 'Offer Pending' ? 'selected' : '' %>>Offer Pending</option>
+                <option value="Work Order Confirmed" <%= candidate.status === 'Work Order Confirmed' ? 'selected' : '' %>>Work Order Confirmed</option>
+                <option value="Work Order Accepted" <%= candidate.status === 'Work Order Accepted' ? 'selected' : '' %>>Work Order Accepted</option>
+                <option value="Pending Onboarding" <%= candidate.status === 'Pending Onboarding' ? 'selected' : '' %>>Pending Onboarding</option>
+                <option value="Rejected" <%= candidate.status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+                <option value="Disqualified" <%= candidate.status === 'Disqualified' ? 'selected' : '' %>>Disqualified</option>
+                
+                <% 
+                  // Add custom status if current status is not in the predefined list
+                  const predefinedStatuses = [
+                    'Submitted', 'Qualified', 'Shortlisted', 
+                    'Interview Scheduled', 'Interview Completed', 'Second Interview', 
+                    'Offer Pending', 'Work Order Confirmed', 'Work Order Accepted', 
+                    'Pending Onboarding', 'Rejected', 'Disqualified'
+                  ];
+                  
+                  if (!predefinedStatuses.includes(candidate.status)) { 
+                %>
+                  <option value="<%= candidate.status %>" selected><%= candidate.status %> (Current)</option>
+                <% } %>
+                
+                <option value="Other">Other (Custom Status)</option>
+              </select>
+              
+              <!-- Custom status input (hidden by default) -->
+              <input type="text" id="customStatus" class="form-control mt-2 d-none" placeholder="Enter custom status" name="customStatus">
+            </div>
+          </div>
+          
+          <div class="row mb-3 rejection-reason-group">
+            <label for="rejectionReason" class="col-sm-3 col-form-label">Rejection Reason:</label>
+            <div class="col-sm-9">
+              <select class="form-select" id="rejectionReason" name="rejectionReason">
+                <option value="" <%= !candidate.rejectionReason ? 'selected' : '' %>>-- Select Reason --</option>
+                <option value="Not Qualified" <%= candidate.rejectionReason === 'Not Qualified' ? 'selected' : '' %>>Not Qualified</option>
+                <option value="Poor Interview Performance" <%= candidate.rejectionReason === 'Poor Interview Performance' ? 'selected' : '' %>>Poor Interview Performance</option>
+                <option value="Position Filled" <%= candidate.rejectionReason === 'Position Filled' ? 'selected' : '' %>>Position Filled</option>
+                <option value="Salary Expectations" <%= candidate.rejectionReason === 'Salary Expectations' ? 'selected' : '' %>>Salary Expectations</option>
+                <option value="Neutral - Candidate Declined" <%= candidate.rejectionReason === 'Neutral - Candidate Declined' ? 'selected' : '' %>>Neutral - Candidate Declined</option>
+                <option value="Neutral - Other Offer" <%= candidate.rejectionReason === 'Neutral - Other Offer' ? 'selected' : '' %>>Neutral - Other Offer</option>
+                <option value="Neutral - Relocation" <%= candidate.rejectionReason === 'Neutral - Relocation' ? 'selected' : '' %>>Neutral - Relocation</option>
+                <option value="Neutral - Personal Reasons" <%= candidate.rejectionReason === 'Neutral - Personal Reasons' ? 'selected' : '' %>>Neutral - Personal Reasons</option>
+                
+                <% 
+                  // Add custom rejection reason if current reason is not in the predefined list
+                  const predefinedReasons = [
+                    '', 'Not Qualified', 'Poor Interview Performance', 'Position Filled', 
+                    'Salary Expectations', 'Neutral - Candidate Declined', 
+                    'Neutral - Other Offer', 'Neutral - Relocation', 'Neutral - Personal Reasons'
+                  ];
+                  
+                  if (candidate.rejectionReason && !predefinedReasons.includes(candidate.rejectionReason)) { 
+                %>
+                  <option value="<%= candidate.rejectionReason %>" selected><%= candidate.rejectionReason %></option>
+                <% } %>
+                
+                <option value="Other">Other (Custom Reason)</option>
+              </select>
+              
+              <!-- Custom rejection reason input (hidden by default) -->
+              <input type="text" id="customReason" class="form-control mt-2 d-none" placeholder="Enter custom reason" name="customReason">
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <label for="notes" class="col-sm-3 col-form-label">Notes:</label>
+            <div class="col-sm-9">
+              <textarea class="form-control" id="notes" name="notes" rows="4"><%= candidate.notes || '' %></textarea>
+            </div>
+          </div>
+          
+          <div class="d-flex justify-content-between mt-4">
+            <a href="/candidates" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Update Candidate</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.getElementById('status');
+    const customStatusInput = document.getElementById('customStatus');
+    const rejectionReasonGroup = document.querySelector('.rejection-reason-group');
+    const rejectionReasonSelect = document.getElementById('rejectionReason');
+    const customReasonInput = document.getElementById('customReason');
+    
+    // Toggle custom status input
+    statusSelect.addEventListener('change', function() {
+      if (this.value === 'Other') {
+        customStatusInput.classList.remove('d-none');
+        customStatusInput.setAttribute('name', 'status');
+        statusSelect.removeAttribute('name');
+      } else {
+        customStatusInput.classList.add('d-none');
+        customStatusInput.removeAttribute('name');
+        statusSelect.setAttribute('name', 'status');
+      }
+      
+      // Show/hide rejection reason based on status
+      if (this.value === 'Rejected' || this.value === 'Disqualified') {
+        rejectionReasonGroup.classList.remove('d-none');
+      } else {
+        rejectionReasonGroup.classList.add('d-none');
+      }
+    });
+    
+    // Toggle custom reason input
+    rejectionReasonSelect.addEventListener('change', function() {
+      if (this.value === 'Other') {
+        customReasonInput.classList.remove('d-none');
+        customReasonInput.setAttribute('name', 'rejectionReason');
+        rejectionReasonSelect.removeAttribute('name');
+      } else {
+        customReasonInput.classList.add('d-none');
+        customReasonInput.removeAttribute('name');
+        rejectionReasonSelect.setAttribute('name', 'rejectionReason');
+      }
+    });
+    
+    // Trigger change event on page load to set initial state
+    statusSelect.dispatchEvent(new Event('change'));
+    rejectionReasonSelect.dispatchEvent(new Event('change'));
+  });
+</script>
