@@ -92,13 +92,7 @@ The application uses an Azure SQL Database with the following main tables:
 
 ## Default Login Credentials
 
-- Admin User:
-  - Email: clopez@weilgroup.com
-  - Password: admin123
 
-- Regular User:
-  - Email: emmanuel.lugo@weilgroup.com
-  - Password: user123
 
 ## License
 
