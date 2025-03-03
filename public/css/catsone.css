@@ -1,0 +1,67 @@
+/* public/css/catsone.css */
+
+/* Color box for legends */
+.color-box {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+/* Row color styles based on age */
+.light-green {
+  background-color: rgba(144, 238, 144, 0.3) !important;
+}
+
+.pale-blue {
+  background-color: rgba(173, 216, 230, 0.3) !important;
+}
+
+.pale-red {
+  background-color: rgba(255, 182, 193, 0.3) !important;
+}
+/* Table styles */
+#catsoneJobsTable {
+  font-size: 0.9rem;
+}
+
+#catsoneJobsTable th {
+  white-space: nowrap;
+  background-color: #f8f9fa;
+}
+
+/* Notes cell styling */
+.notes-cell {
+  max-width: 250px;
+  position: relative;
+}
+
+.notes-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  transition: all 0.3s ease;
+}
+
+.notes-content.expanded {
+  white-space: normal;
+  overflow: visible;
+}
+
+.view-more {
+  padding: 0;
+  margin-top: 5px;
+  font-size: 0.8rem;
+}
+
+/* Export button styling */
+.btn-export {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-export:hover {
+  background-color: #218838;
+  color: white;
+}
