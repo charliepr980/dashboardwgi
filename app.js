@@ -147,6 +147,13 @@ require('./routes/candidateRoutes')(app);
 const reportsRoutes = require('./routes/reports');
 app.use('/reports', checkAuthenticated, reportsRoutes);
 
+// Register monthly routes
+app.use('/monthly', checkAuthenticated, monthlyRoutes);
+
+// Register CatsOne routes
+const catsOneRoutes = require('./routes/catsone');
+app.use('/catsone', checkAuthenticated, catsOneRoutes);
+
 // Handle 404
 app.use((req, res) => {
   res.status(404).render('404', {

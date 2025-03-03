@@ -9,6 +9,7 @@
     "init-db": "node initializeDatabase.js"
   },
   "dependencies": {
+    "axios": "^1.8.1",
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
     "dotenv": "^16.4.7",

@@ -1,0 +1,95 @@
+<!-- views/catsone/index.ejs -->
+<% contentFor('head') %>
+<%- include('./index-head') %>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <h2>CatsOne Active Jobs</h2>
+  </div>
+  <div class="col-md-6 text-end">
+    <a href="/catsone/export" class="btn btn-success">
+      <i class="bi bi-file-excel me-2"></i>Export to Excel
+    </a>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-striped table-hover" id="catsoneJobsTable">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Created</th>
+      <th>Age(D)</th>
+      <th>Our ID</th>
+      <th>Company</th>
+      <th>Status</th>  <!-- New column -->
+      <th>Positions Requested</th>
+      <th>Openings</th>
+      <th>Submitted</th>
+      <th>Remaining</th>
+      <th>Bill Rate</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (jobs && jobs.length > 0) { %>
+      <% jobs.forEach(job => { %>
+        <tr class="<%= job.rowColor %>">
+          <td><%= job.id %></td>
+          <td><%= job.created %></td>
+          <td><%= job.age %></td>
+          <td><%= job.ourId %></td>
+          <td><%= job.company %></td>
+          <td><%= job.status %></td>  <!-- Display status -->
+          <td><%= job.positionsRequested %></td>
+          <td><%= job.openings %></td>
+          <td><%= job.submitted %></td>
+          <td><%= job.remaining %></td>
+          <td><%= job.billRate %></td>
+          <td class="notes-cell">
+            <% if (job.notes && job.notes !== 'N/A') { %>
+              <div class="notes-content"><%= job.notes %></div>
+              <% if (job.notes.length > 50) { %>
+                <button class="btn btn-sm btn-link view-more">View More</button>
+              <% } %>
+            <% } else { %>
+              <%= job.notes %>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    <% } else { %>
+      <tr>
+        <td colspan="12" class="text-center">No active jobs found</td>  <!-- Update colspan to 12 -->
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+    </div>
+  </div>
+</div>
+
+<!-- Job status legends -->
+<div class="card mt-3 shadow-sm">
+  <div class="card-body">
+    <div class="d-flex justify-content-between flex-wrap">
+      <div class="d-flex align-items-center me-3 mb-2">
+        <div class="color-box light-green me-2"></div>
+        <span>Under 30 days</span>
+      </div>
+      <div class="d-flex align-items-center me-3 mb-2">
+        <div class="color-box pale-blue me-2"></div>
+        <span>30-60 days</span>
+      </div>
+      <div class="d-flex align-items-center mb-2">
+        <div class="color-box pale-red me-2"></div>
+        <span>Over 60 days</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% contentFor('scripts') %>
+<%- include('./index-scripts') %>

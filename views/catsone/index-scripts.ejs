@@ -1,0 +1,65 @@
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    // Initialize DataTable with advanced features
+    const dataTable = $('#catsoneJobsTable').DataTable({
+      "pageLength": 25,
+      "order": [[2, "desc"]], // Sort by age column by default
+      "responsive": true,
+      "language": {
+        "search": "Search:",
+        "lengthMenu": "Show _MENU_ entries",
+        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+        "infoEmpty": "Showing 0 to 0 of 0 entries",
+        "infoFiltered": "(filtered from _MAX_ total entries)"
+      },
+      "columnDefs": [
+  { "width": "5%", "targets": 0 }, // ID
+  { "width": "7%", "targets": 1 }, // Created
+  { "width": "5%", "targets": 2 }, // Age
+  { "width": "7%", "targets": 3 }, // Our ID
+  { "width": "12%", "targets": 4 }, // Company
+  { "width": "8%", "targets": 5 }, // Status (new column)
+  { "width": "15%", "targets": 6 }, // Positions Requested
+  { "width": "6%", "targets": 7 }, // Openings
+  { "width": "6%", "targets": 8 }, // Submitted
+  { "width": "7%", "targets": 9 }, // Remaining
+  { "width": "7%", "targets": 10 }, // Bill Rate
+  { "width": "15%", "targets": 11 } // Notes
+],
+      "dom": '<"top"lf>rt<"bottom"ip><"clear">'
+    });
+    
+    // Toggle notes expansion
+    $(document).on('click', '.view-more', function() {
+      const notesContent = $(this).siblings('.notes-content');
+      notesContent.toggleClass('expanded');
+      $(this).text(notesContent.hasClass('expanded') ? 'View Less' : 'View More');
+    });
+    
+    // Reinitialize view-more buttons after table redraws
+    dataTable.on('draw', function() {
+      $('.view-more').each(function() {
+        const notesContent = $(this).siblings('.notes-content');
+        $(this).text(notesContent.hasClass('expanded') ? 'View Less' : 'View More');
+      });
+    });
+    
+    // Add search delay to improve performance
+    $.fn.dataTable.ext.search.push(
+      function(settings, data, dataIndex) {
+        return true; // Return true to include all rows initially
+      }
+    );
+    
+    // Redraw table on window resize for better responsiveness
+    $(window).resize(function() {
+      dataTable.columns.adjust().responsive.recalc();
+    });
+  });
+</script>
